@@ -1,0 +1,103 @@
+local Hitbox = {} Hitbox.__index = Hitbox 
+Hitbox.ShapecastHitbox = nil
+
+local workspace = game:GetService("Workspace")
+local runService = game:GetService("RunService")
+local players = game:GetService("Players")
+
+local function findHumanoid(instance)
+	if typeof(instance) ~= "Instance" then return end
+	if not instance:IsDescendantOf(workspace.Entities) then return end
+	
+	local model = instance:FindFirstAncestorWhichIsA("Model")
+	local humanoid = model:FindFirstChild("Humanoid")
+	
+	local times = 0
+	while model and not humanoid or times >= 3 do
+		model = model:FindFirstAncestorWhichIsA("Model")
+		humanoid = model:FindFirstChild("Humanoid")
+		times += 1
+	end
+	
+	return humanoid
+end
+
+function Hitbox.new(hitboxSettings, hitboxPart)
+	local self = setmetatable({}, Hitbox)
+	
+	self.Settings = {
+		Distance = hitboxSettings.Distance or 0;
+		Exclude = hitboxSettings.Exclude or {};
+		
+		ReturnType = hitboxSettings.ReturnType or "Model";
+		
+		OnlyEntities = hitboxSettings.OnlyEntities or true;
+		Visualize = hitboxSettings.Visualize or true;
+		HitOnce = hitboxSettings.HitOnce or true;
+		Effects = hitboxSettings.Effects or true;
+		Time = hitboxSettings.Time or 3;
+	}
+	
+	if typeof(self.Settings.Exclude) == "Instance" then
+		self.Settings.Exclude = {self.Settings.Exclude}
+	end
+	
+	table.insert(self.Settings.Exclude, workspace.Ignore)
+	
+	self.HitPart = hitboxPart
+	self.HitFunction = nil
+	self.LastPosition = hitboxPart.Position
+	
+	self.StartTime = 0
+	self.Casting = false
+	self.CurrentResult = nil
+	
+	self.RaycastParams = RaycastParams.new()
+	self.RaycastParams.IgnoreWater = true
+	self.RaycastParams.FilterType = Enum.RaycastFilterType.Exclude
+	self.RaycastParams.FilterDescendantsInstances = hitboxSettings.Exclude
+	
+	return self
+end
+
+function Hitbox:Modify(hitboxSettings, hitboxPart)
+	self.Settings = hitboxSettings
+	self.HitPart = hitboxPart
+end
+
+function Hitbox:Start(func)
+	assert(typeof(func) == "function", "argument #1 of Hitbox:Start() must be a function")
+	self.HitFunction = func
+	self.StartTime = os.clock()
+	self.Casting = true
+	return Hitbox
+end
+
+function Hitbox:Stop()
+	self.Casting = false
+	self.HitFunction = nil
+	self.StartTime = 0
+	return Hitbox
+end
+
+function Hitbox:Destroy()
+	self.Casting = false
+	
+	local index = table.find(Hitbox.ShapecastHitbox.Hitboxes, self)
+	Hitbox.ShapecastHitbox.Hitboxes[index]:Destroy()
+	table.remove(Hitbox.ShapecastHitbox.Hitboxes, index)
+	
+	for i,v in self.Connections do 
+		v:Disconnect()
+	end
+	
+	for i,v in self do
+		if typeof(v) == "table" then
+			table.clear(v)
+		end
+	end
+end
+
+
+
+return Hitbox
