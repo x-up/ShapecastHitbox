@@ -11,6 +11,8 @@ Hitbox Module for ROBLOX using `WorldRoot:Shapecast`
 
 ## Example:
 ```lua
+local combat = {}
+
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local hitboxModule = require(replicatedStorage:WaitForChild("Modules"):WaitForChild("ShapecastHitbox"))
 local hitbox = hitboxModule.CreateHitbox(
@@ -29,4 +31,6 @@ function combat:Invoke()
 		serverEvent:FireServer({"Attack", model})
 	end)
 end
+
+return combat
 ```
