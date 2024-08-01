@@ -2,10 +2,10 @@
 Hitbox Module for ROBLOX using `WorldRoot:Shapecast`
 
 # How do I put this in my game?
-Create a ModuleScript\n
-Paste the code from ShapecastHitbox.luau inside of the newly created module\n
-Insert another ModuleScript inside of the newly created module, name it `Hitbox`\n
-Paste the code from HitboxObject.luau into the `Hitbox` module.
+1. Create a ModuleScript
+2. Paste the code from ShapecastHitbox.luau inside of the newly created module
+3. Insert another ModuleScript inside of the newly created module, name it `Hitbox`
+4. Paste the code from HitboxObject.luau into the `Hitbox` module.
 
 # Example:
 ```lua
