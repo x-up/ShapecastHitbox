@@ -1,32 +1,29 @@
---// Environment
+--// env
 local hitboxObj = require(script.Hitbox)
 
-local emptyCFrame, emptyVector, xzVector, yVector = CFrame.new(), Vector3.new(0,0.1,0), Vector3.new(1,0,1), Vector3.new(0, 1, 0)
+local workspace = game:GetService("Workspace")
+local runService = game:GetService("RunService")
+local players = game:GetService("Players")
 
-local function findHumanoid(instance)
+local function findEntity(instance)
 	if typeof(instance) ~= "Instance" then return end
 	if not instance:IsDescendantOf(workspace.Entities) then return end
 
 	local model = instance:FindFirstAncestorWhichIsA("Model")
 	local humanoid = model:FindFirstChild("Humanoid")
 
-	local times = 0
-	while model and not humanoid or times >= 3 do
+	local searches = 0
+	while model and not humanoid or searches >= 3 do
 		model = model:FindFirstAncestorWhichIsA("Model")
 		humanoid = model:FindFirstChild("Humanoid")
-		times += 1
+		searches += 1
 	end
 
-	return humanoid
+	return model, humanoid
 end
 
-local workspace = game:GetService("Workspace")
-local runService = game:GetService("RunService")
-local players = game:GetService("Players")
 
-
-
---// Module
+--// module
 local self = {} hitboxObj.ShapecastHitbox = self
 self.Hitboxes = {}
 self.Connections = {}
@@ -45,9 +42,8 @@ self.Connections["RenderStepped"] = runService.RenderStepped:Connect(function(dt
 
 			if result then
 				if _settings.OnlyEntities then
-					local humanoid = findHumanoid(result.Instance)
-					if not humanoid then return end
-					hitbox.HitFunction(_settings.ReturnType == "Model" and humanoid.Parent or _settings.ReturnType == "Humanoid" and humanoid)
+					local model, humanoid = findEntity(result.Instance)
+					hitbox.HitFunction(_settings.ReturnType == "Model" and model or _settings.ReturnType == "Humanoid" and humanoid or _settings.ReturnType == "Part" and result.Instance, result)
 				else
 					print('hi')
 				end
