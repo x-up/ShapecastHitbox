@@ -1,2 +1,2 @@
 # ShapecastHitbox
-Hitbox Module for ROBLOX using `Shapecast`
+Hitbox Module for ROBLOX using `WorldRoot:Shapecast`
