@@ -1,4 +1,4 @@
---// env
+--// Environment
 local hitboxObj = require(script.Hitbox)
 
 local workspace = game:GetService("Workspace")
@@ -23,19 +23,18 @@ local function findEntity(instance)
 end
 
 
---// module
+--// Module
 local self = {} hitboxObj.ShapecastHitbox = self
 self.Hitboxes = {}
 self.Connections = {}
 
 self.Connections["RenderStepped"] = runService.RenderStepped:Connect(function(dt)
 	for i, hitbox in self.Hitboxes do
+		local hitPart = hitbox.HitPart
 		if hitbox.Casting then
 			if os.clock() - hitbox.StartTime >= hitbox.Settings.Time then hitbox:Stop() end
 			
 			local _settings = hitbox.Settings
-			
-			local hitPart = hitbox.HitPart
 			
 			local result = workspace:Shapecast(hitbox.HitPart, hitbox.HitPart.Position - hitbox.LastPosition, hitbox.RaycastParams)
 			hitbox.CurrentResult = result
@@ -43,18 +42,19 @@ self.Connections["RenderStepped"] = runService.RenderStepped:Connect(function(dt
 			if result then
 				if _settings.OnlyEntities then
 					local model, humanoid = findEntity(result.Instance)
+					if not model or not humanoid then return end
 					hitbox.HitFunction(_settings.ReturnType == "Model" and model or _settings.ReturnType == "Humanoid" and humanoid or _settings.ReturnType == "Part" and result.Instance, result)
 				else
-					print('hi')
+					hitbox.HitFunction(result.Instance, result)
 				end
-
+				
 				if _settings.HitOnce then hitbox:Stop() end
 			end
-			
-			hitbox.LastPosition = hitPart.Position
 		else
 			hitbox.CurrentResult = nil
 		end
+		
+		hitbox.LastPosition = hitPart.Position
 	end
 end)
 
