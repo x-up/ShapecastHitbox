@@ -1,7 +1,7 @@
 # ShapecastHitbox
 Hitbox Module for ROBLOX using `WorldRoot:Shapecast`
 
-**Created for a game that I am currently developing; I would not recommend server-side use of this module, as it can be taxxing.**
+**Created for a game that I am currently developing; I would not recommend server-side use of this module, as it can be taxing.**
 
 ### How do I put this in my game?
 1. Create a ModuleScript
