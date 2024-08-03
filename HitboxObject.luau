@@ -67,6 +67,7 @@ end
 
 function Hitbox:Start(func)
 	assert(typeof(func) == "function", "argument #1 of Hitbox:Start() must be a function")
+	self.LastPosition = self.HitPart.Position
 	self.HitFunction = func
 	self.StartTime = os.clock()
 	self.Casting = true
@@ -97,7 +98,5 @@ function Hitbox:Destroy()
 		end
 	end
 end
-
-
 
 return Hitbox
