@@ -28,16 +28,32 @@ local self = {} hitboxObj.ShapecastHitbox = self
 self.Hitboxes = {}
 self.Connections = {}
 
-self.Connections["RenderStepped"] = runService.RenderStepped:Connect(function(dt)
+self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
 	for i, hitbox in self.Hitboxes do
 		local hitPart = hitbox.HitPart
 		if hitbox.Casting then
 			if os.clock() - hitbox.StartTime >= hitbox.Settings.Time then hitbox:Stop() end
 			
 			local _settings = hitbox.Settings
-			
-			local result = workspace:Shapecast(hitbox.HitPart, hitbox.HitPart.Position - hitbox.LastPosition, hitbox.RaycastParams)
+			print(hitbox.LastPosition)
+			local direction = hitPart.Position - hitbox.LastPosition
+			local result = workspace:Shapecast(hitPart, direction, hitbox.RaycastParams)
 			hitbox.CurrentResult = result
+			
+			if _settings.Visualize then
+				local clone = hitPart:Clone()
+				clone:ClearAllChildren()
+				clone.Anchored = true
+				clone.Parent = workspace.Ignore
+				clone.Transparency = 0
+				clone.Color = Color3.new(1,0,0)
+				clone.CanCollide = false
+				clone.CanQuery = false
+				clone.CanTouch = false
+				clone.Material = Enum.Material.Neon
+				clone.CFrame += direction
+				game.Debris:AddItem(clone, 1)
+			end
 
 			if result then
 				if _settings.OnlyEntities then
