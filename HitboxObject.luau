@@ -57,7 +57,24 @@ function Hitbox.new(hitboxSettings, hitboxPart)
 	self.RaycastParams.FilterType = Enum.RaycastFilterType.Exclude
 	self.RaycastParams.FilterDescendantsInstances = hitboxSettings.Exclude
 	
+	self.HitEvent = Instance.new("BindableEvent")
+	self.EndedEvent = Instance.new("BindableEvent")
+	
+	self.Hit = self.HitEvent.Event
+	self.Ended = self.EndedEvent.Event
+	
 	return self
+end
+
+function Hitbox:ResetBindables()
+	self.HitEvent:Destroy()
+	self.EndedEvent:Destroy()
+	
+	self.HitEvent = Instance.new("BindableEvent")
+	self.EndedEvent = Instance.new("BindableEvent")
+
+	self.Hit = self.HitEvent.Event
+	self.Ended = self.EndedEvent.Event
 end
 
 function Hitbox:Modify(hitboxSettings, hitboxPart)
@@ -66,15 +83,19 @@ function Hitbox:Modify(hitboxSettings, hitboxPart)
 end
 
 function Hitbox:Start(func)
-	assert(typeof(func) == "function", "argument #1 of Hitbox:Start() must be a function")
+	if func ~= nil then
+		assert(typeof(func) == "function", "argument #1 of Hitbox:Start() must be a function")
+	end
 	self.LastPosition = self.HitPart.Position
 	self.HitFunction = func
 	self.StartTime = os.clock()
 	self.Casting = true
-	return Hitbox
+	return self.Hit
 end
 
 function Hitbox:Stop()
+	self.EndedEvent:Fire()
+	self:ResetBindables()
 	self.Casting = false
 	self.HitFunction = nil
 	self.StartTime = 0
@@ -91,6 +112,9 @@ function Hitbox:Destroy()
 	for i,v in self.Connections do 
 		v:Disconnect()
 	end
+	
+	self.HitEvent:Destroy()
+	self.EndedEvent:Destroy()
 	
 	for i,v in self do
 		if typeof(v) == "table" then
