@@ -35,7 +35,7 @@ self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
 			if os.clock() - hitbox.StartTime >= hitbox.Settings.Time then hitbox:Stop() end
 			
 			local _settings = hitbox.Settings
-			print(hitbox.LastPosition)
+
 			local direction = hitPart.Position - hitbox.LastPosition
 			local result = workspace:Shapecast(hitPart, direction, hitbox.RaycastParams)
 			hitbox.CurrentResult = result
