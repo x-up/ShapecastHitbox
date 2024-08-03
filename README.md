@@ -21,6 +21,7 @@ local hitboxModule = require(replicatedStorage:WaitForChild("Modules"):WaitForCh
 local hitbox = hitboxModule.CreateHitbox(
 	{
 		ReturnType = "Model";
+		Time = 1;
 		
 		OnlyEntities = true;
 		Exclude = {character, katana};
@@ -30,8 +31,8 @@ local hitbox = hitboxModule.CreateHitbox(
 )
 
 function combat:Invoke()
-	hitbox:Start(function(model)
-		serverEvent:FireServer({"Attack", model})
+	hitboxObj:Start():Connect(function(model)
+		combatEvent:FireServer({"Attack", model})
 	end)
 end
 
