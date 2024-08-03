@@ -35,10 +35,12 @@ self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
 			if os.clock() - hitbox.StartTime >= hitbox.Settings.Time then hitbox:Stop() end
 			
 			local _settings = hitbox.Settings
-
+			
 			local direction = hitPart.Position - hitbox.LastPosition
 			local result = workspace:Shapecast(hitPart, direction, hitbox.RaycastParams)
 			hitbox.CurrentResult = result
+			
+			local func; if hitbox.HitFunction then func = hitbox.HitFunction end
 			
 			if _settings.Visualize then
 				local clone = hitPart:Clone()
@@ -59,9 +61,12 @@ self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
 				if _settings.OnlyEntities then
 					local model, humanoid = findEntity(result.Instance)
 					if not model or not humanoid then return end
-					hitbox.HitFunction(_settings.ReturnType == "Model" and model or _settings.ReturnType == "Humanoid" and humanoid or _settings.ReturnType == "Part" and result.Instance, result)
+					
+					local ret = _settings.ReturnType == "Model" and model or _settings.ReturnType == "Humanoid" and humanoid or _settings.ReturnType == "Part" and result.Instance
+					
+					hitbox.HitEvent:Fire(ret, result)
 				else
-					hitbox.HitFunction(result.Instance, result)
+					hitbox.HitEvent:Fire(result.Instance, result)
 				end
 				
 				if _settings.HitOnce then hitbox:Stop() end
