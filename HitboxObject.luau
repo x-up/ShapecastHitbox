@@ -32,7 +32,7 @@ function Hitbox.new(hitboxSettings, hitboxPart)
 		ReturnType = hitboxSettings.ReturnType or "Model";
 		
 		OnlyEntities = hitboxSettings.OnlyEntities or true;
-		Visualize = hitboxSettings.Visualize or true;
+		Visualize = hitboxSettings.Visualize or false;
 		HitOnce = hitboxSettings.HitOnce or true;
 		Effects = hitboxSettings.Effects or true;
 		Time = hitboxSettings.Time or 3;
