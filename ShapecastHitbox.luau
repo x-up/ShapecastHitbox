@@ -70,6 +70,10 @@ self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 					
 					hitbox.HitEvent:Fire(ret, result)
 				else
+					if _settings.HitOnce then 
+						if table.find(hitbox.Hits, result.Instance) then return end
+						table.insert(hitbox.Hits, result.Instance)
+					end
 					hitbox.HitEvent:Fire(result.Instance, result)
 				end
 			end
