@@ -10,7 +10,7 @@ Hitbox Module for ROBLOX using `WorldRoot:Shapecast`
 4. Paste the code from HitboxObject.luau into the `Hitbox` module.
 
 ### Why wont the setting 'OnlyEntities' work?
-- For this to work, you need to have a folder inside of `Workspace` that holds all entities.
+- For this to work, you need to have a folder inside of `Workspace` named `Entities` that holds all entities.
 
 ## Example:
 ```lua
