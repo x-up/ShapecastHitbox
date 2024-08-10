@@ -26,9 +26,9 @@ end
 --// Module
 local self = {} hitboxObj.ShapecastHitbox = self
 self.Hitboxes = {}
-self.Connections = {}
+self.Connects = {}
 
-self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
+self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 	for i, hitbox in self.Hitboxes do
 		local hitPart = hitbox.HitPart
 		if hitbox.Casting then
@@ -61,6 +61,10 @@ self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
 				if _settings.OnlyEntities then
 					local model, humanoid = findEntity(result.Instance)
 					if not model or not humanoid then return end
+					if _settings.HitOnce then 
+						if table.find(hitbox.Hits, model) then return end
+						table.insert(hitbox.Hits, model)
+					end
 					
 					local ret = _settings.ReturnType == "Model" and model or _settings.ReturnType == "Humanoid" and humanoid or _settings.ReturnType == "Part" and result.Instance
 					
@@ -68,8 +72,6 @@ self.Connections["RenderStepped"] = runService.Stepped:Connect(function(dt)
 				else
 					hitbox.HitEvent:Fire(result.Instance, result)
 				end
-				
-				if _settings.HitOnce then hitbox:Stop() end
 			end
 		else
 			hitbox.CurrentResult = nil
