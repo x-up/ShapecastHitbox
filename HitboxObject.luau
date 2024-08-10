@@ -46,6 +46,7 @@ function Hitbox.new(hitboxSettings, hitboxPart)
 	
 	self.HitPart = hitboxPart
 	self.HitFunction = nil
+	self.Hits = {}
 	self.LastPosition = hitboxPart.Position
 	
 	self.StartTime = 0
@@ -86,6 +87,11 @@ function Hitbox:Start(func)
 	if func ~= nil then
 		assert(typeof(func) == "function", "argument #1 of Hitbox:Start() must be a function")
 	end
+	if self.Casting then
+		self:Stop()
+	end
+	
+	table.clear(self.Hits)
 	self.LastPosition = self.HitPart.Position
 	self.HitFunction = func
 	self.StartTime = os.clock()
@@ -94,6 +100,7 @@ function Hitbox:Start(func)
 end
 
 function Hitbox:Stop()
+	table.clear(self.Hits)
 	self.EndedEvent:Fire()
 	self:ResetBindables()
 	self.Casting = false
@@ -108,10 +115,6 @@ function Hitbox:Destroy()
 	local index = table.find(Hitbox.ShapecastHitbox.Hitboxes, self)
 	Hitbox.ShapecastHitbox.Hitboxes[index]:Destroy()
 	table.remove(Hitbox.ShapecastHitbox.Hitboxes, index)
-	
-	for i,v in self.Connections do 
-		v:Disconnect()
-	end
 	
 	self.HitEvent:Destroy()
 	self.EndedEvent:Destroy()
