@@ -32,6 +32,8 @@ self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 	for i, hitbox in self.Hitboxes do
 		local hitPart = hitbox.HitPart
 		if hitbox.Casting then
+			self.Skip = not self.Skip
+			if self.Skip then continue end
 			if os.clock() - hitbox.StartTime >= hitbox.Settings.Time then hitbox:Stop() end
 			
 			local _settings = hitbox.Settings
@@ -42,8 +44,9 @@ self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 			
 			local func; if hitbox.HitFunction then func = hitbox.HitFunction end
 			
+			local clone;
 			if _settings.Visualize then
-				local clone = hitPart:Clone()
+				clone = hitPart:Clone()
 				clone:ClearAllChildren()
 				clone.Anchored = true
 				clone.Parent = workspace.Ignore
@@ -75,6 +78,10 @@ self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 						table.insert(hitbox.Hits, result.Instance)
 					end
 					hitbox.HitEvent:Fire(result.Instance, result)
+				end
+				
+				if clone then
+					clone.Color = Color3.new(0, 1, 0)
 				end
 			end
 		else
