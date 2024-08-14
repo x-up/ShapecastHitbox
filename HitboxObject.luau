@@ -53,6 +53,8 @@ function Hitbox.new(hitboxSettings, hitboxPart)
 	self.Casting = false
 	self.CurrentResult = nil
 	
+	self.Skip = true --// this gets flipped on the first cast, so keep it initialized to true
+	
 	self.RaycastParams = RaycastParams.new()
 	self.RaycastParams.IgnoreWater = true
 	self.RaycastParams.FilterType = Enum.RaycastFilterType.Exclude
