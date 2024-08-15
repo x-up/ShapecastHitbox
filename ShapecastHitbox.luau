@@ -110,12 +110,7 @@ self.Destroy = function()
 		v:Destroy()
 	end
 	
-	for i,v in self do 
-		if typeof(v) == "table" then table.clear(v) end
-		v = nil
-	end
-	
-	self = nil
+	table.clear(self)
 end
 
 return self
