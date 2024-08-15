@@ -80,9 +80,13 @@ function Hitbox:ResetBindables()
 	self.Ended = self.EndedEvent.Event
 end
 
-function Hitbox:Modify(hitboxSettings, hitboxPart)
-	self.Settings = hitboxSettings
-	self.HitPart = hitboxPart
+function Hitbox:Modify(modifyTable)
+	if modifyTable.Settings then
+		self.Settings = modifyTable.Settings
+	end
+	if modifyTable.HitPart then
+		self.HitPart = modifyTable.HitPart
+	end
 end
 
 function Hitbox:Start(func)
@@ -121,11 +125,8 @@ function Hitbox:Destroy()
 	self.HitEvent:Destroy()
 	self.EndedEvent:Destroy()
 	
-	for i,v in self do
-		if typeof(v) == "table" then
-			table.clear(v)
-		end
-	end
+	table.clear(self)
+	table.clear(Hitbox)
 end
 
 return Hitbox
