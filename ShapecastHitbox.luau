@@ -30,8 +30,8 @@ self.Connects = {}
 
 self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 	for i, hitbox in self.Hitboxes do
-		self.Skip = not self.Skip
-		if self.Skip then continue end
+		hitbox.Skip = not hitbox.Skip
+		if hitbox.Skip then continue end
 		
 		local hitPart = hitbox.HitPart
 		if hitbox.Casting then
