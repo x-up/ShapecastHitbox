@@ -30,10 +30,11 @@ self.Connects = {}
 
 self.Connects["Stepped"] = runService.Stepped:Connect(function(dt)
 	for i, hitbox in self.Hitboxes do
+		self.Skip = not self.Skip
+		if self.Skip then continue end
+		
 		local hitPart = hitbox.HitPart
 		if hitbox.Casting then
-			self.Skip = not self.Skip
-			if self.Skip then continue end
 			if os.clock() - hitbox.StartTime >= hitbox.Settings.Time then hitbox:Stop() end
 			
 			local _settings = hitbox.Settings
